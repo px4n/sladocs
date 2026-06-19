@@ -4,6 +4,6 @@
 
 ### Minor Changes
 
-- [#5](https://github.com/ysds/sladocs/pull/5) [`7dc5bc2`](https://github.com/ysds/sladocs/commit/7dc5bc29d01f59825e4687c8c8a277d660e9c3d6) Thanks [@ysds](https://github.com/ysds)! - Add OGP, canonical, and favicon meta tags for richer link previews ([#3](https://github.com/ysds/sladocs/pull/3)).
+- [#3](https://github.com/ysds/sladocs/pull/3) [`b88aa99`](https://github.com/ysds/sladocs/commit/b88aa9991d22390effda6f7686728bcb29da6e88) Thanks [@ysds](https://github.com/ysds)! - Add OGP, canonical, and favicon meta tags for richer link previews.
 
-  Move bundled dependencies to devDependencies, cutting install size from ~198M to ~23M ([#4](https://github.com/ysds/sladocs/pull/4)).
+- [#4](https://github.com/ysds/sladocs/pull/4) [`cf651e5`](https://github.com/ysds/sladocs/commit/cf651e527eb1371cc22c7c1607113329347b03e0) Thanks [@ysds](https://github.com/ysds)! - Move bundled dependencies to devDependencies, cutting install size from ~198M to ~23M.
