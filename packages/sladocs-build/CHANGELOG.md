@@ -1,4 +1,4 @@
-# sladocs
+# sladocs-build
 
 ## 0.3.0
 
@@ -21,11 +21,5 @@
 - [#9](https://github.com/ysds/sladocs/pull/9) [`017b385`](https://github.com/ysds/sladocs/commit/017b3855b886439c296419e17c3053d991c6405c) Thanks [@ysds](https://github.com/ysds)! - Upgrade waku to 1.0.0-beta.3. Adapts the custom Node adapter and root layout to
   the beta's API changes (`unstable_getRequest` replaces `unstable_getContext`,
   and the hono middleware helpers now take an `{ app }` argument).
-
-## 0.2.0
-
-### Minor Changes
-
-- [#3](https://github.com/ysds/sladocs/pull/3) [`b88aa99`](https://github.com/ysds/sladocs/commit/b88aa9991d22390effda6f7686728bcb29da6e88) Thanks [@ysds](https://github.com/ysds)! - Add OGP, canonical, and favicon meta tags for richer link previews.
-
-- [#4](https://github.com/ysds/sladocs/pull/4) [`cf651e5`](https://github.com/ysds/sladocs/commit/cf651e527eb1371cc22c7c1607113329347b03e0) Thanks [@ysds](https://github.com/ysds)! - Move bundled dependencies to devDependencies, cutting install size from ~198M to ~23M.
+- Updated dependencies [[`b5ddf48`](https://github.com/ysds/sladocs/commit/b5ddf4829c71fdbb86cce4976ae90f07b6aecec3), [`017b385`](https://github.com/ysds/sladocs/commit/017b3855b886439c296419e17c3053d991c6405c)]:
+  - sladocs@0.3.0
