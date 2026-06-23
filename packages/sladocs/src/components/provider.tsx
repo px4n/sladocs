@@ -9,11 +9,12 @@ import { localeFromPathname, localeName, localePrefix } from '@/lib/source/i18n.
 interface ProviderProps {
   children: ReactNode;
   i18n?: I18nConfig;
+  searchEnabled?: boolean;
 }
 
-export function Provider({ children, i18n }: ProviderProps) {
+export function Provider({ children, i18n, searchEnabled = true }: ProviderProps) {
   return (
-    <RootProvider>
+    <RootProvider search={{ enabled: searchEnabled }}>
       {i18n ? (
         // Nest our own I18nProvider inside RootProvider so the locale-switch
         // handler can use the framework router hooks, which only resolve below

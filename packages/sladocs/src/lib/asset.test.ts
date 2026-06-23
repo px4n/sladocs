@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { assetUrl, mimeFor, resolveAsset } from './asset.js';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { assetUrl, mimeFor, resolveAsset, withBase } from './asset.js';
 import type { NormalizedProjectConfig } from '@/lib/source/config.js';
 
 const project: NormalizedProjectConfig = {
@@ -64,6 +64,44 @@ describe('assetUrl', () => {
     expect(assetUrl(project, '/proj/docs/page.md', './画像/図.png')).toBe(
       `/api/asset/docs/${encodeURIComponent('画像')}/${encodeURIComponent('図.png')}`,
     );
+  });
+
+  describe('with a static base path', () => {
+    afterEach(() => vi.unstubAllEnvs());
+
+    it('prefixes the base path, collapsing the trailing slash', () => {
+      vi.stubEnv('SLADOCS_BASE_PATH', '/repo/');
+      // basePrefix strips the trailing slash so the URL is not /repo//api/...
+      expect(assetUrl(project, '/proj/docs/page.md', './a.png')).toBe(
+        '/repo/api/asset/docs/a.png',
+      );
+    });
+
+    it('treats root (/) as no prefix', () => {
+      vi.stubEnv('SLADOCS_BASE_PATH', '/');
+      expect(assetUrl(project, '/proj/docs/page.md', './a.png')).toBe(
+        '/api/asset/docs/a.png',
+      );
+    });
+  });
+});
+
+describe('withBase', () => {
+  afterEach(() => vi.unstubAllEnvs());
+
+  it('is a no-op when no base path is set', () => {
+    expect(withBase('/guide/x')).toBe('/guide/x');
+  });
+
+  it('prefixes root-relative urls with the base path', () => {
+    vi.stubEnv('SLADOCS_BASE_PATH', '/repo/');
+    expect(withBase('/guide/x')).toBe('/repo/guide/x');
+  });
+
+  it('leaves absolute and non-root-relative urls untouched', () => {
+    vi.stubEnv('SLADOCS_BASE_PATH', '/repo/');
+    expect(withBase('https://example.com/y')).toBe('https://example.com/y');
+    expect(withBase('rel/x')).toBe('rel/x');
   });
 });
 

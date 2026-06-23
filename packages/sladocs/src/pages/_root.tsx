@@ -7,6 +7,7 @@ import { unstable_getContext as getContext } from 'waku/server';
 import { getConfigRuntime } from '@/config/load-runtime.js';
 import { localeFromPathname } from '@/lib/source/i18n.js';
 import { RootMeta } from '@/lib/meta.js';
+import { isStatic } from '@/lib/env.js';
 
 export default async function RootElement({ children }: { children: ReactNode }) {
   const config = await getConfigRuntime();
@@ -28,8 +29,10 @@ export default async function RootElement({ children }: { children: ReactNode })
         className="flex flex-col min-h-screen antialiased"
         style={style}
       >
-        <Provider i18n={config.i18n}>{children}</Provider>
-        <HotReload />
+        <Provider i18n={config.i18n} searchEnabled={!isStatic()}>
+          {children}
+        </Provider>
+        {!isStatic() && <HotReload />}
       </body>
     </html>
   );
@@ -44,5 +47,5 @@ function requestPathname(): string {
 }
 
 export async function getConfig() {
-  return { render: 'dynamic' } as const;
+  return { render: isStatic() ? 'static' : 'dynamic' } as const;
 }

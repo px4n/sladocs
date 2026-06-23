@@ -1,6 +1,10 @@
 import path from 'node:path';
 import { z } from 'zod';
 
+// Static build mode: set by the static-build entry point so page `getConfig`
+// switches from per-request dynamic rendering to build-time SSG.
+export const isStatic = () => process.env.SLADOCS_STATIC === '1';
+
 const dirsSchema = z.array(z.string());
 
 // Returns absolute project directories. Callers resolve these against ROOT_DIR

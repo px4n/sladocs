@@ -3,6 +3,7 @@ import { getSource } from '@/lib/source/index.js';
 import { getConfigRuntime } from '@/config/load-runtime.js';
 import { normalizeProjects } from '@/lib/source/config.js';
 import { DocsPreviewLogo } from '@/components/logo.js';
+import { isStatic } from '@/lib/env.js';
 
 export async function getDocsLayoutProps(locale?: string): Promise<DocsLayoutProps> {
   const config = await getConfigRuntime();
@@ -21,6 +22,7 @@ export async function getDocsLayoutProps(locale?: string): Promise<DocsLayoutPro
       ),
     },
     githubUrl: config.site.github,
+    searchToggle: { enabled: !isStatic() },
     tabs: hasMultipleProjects ? {} : false,
     // The switcher itself is rendered by the provider's I18nProvider; the layout
     // only needs to know i18n is on so it shows the language trigger.

@@ -53,6 +53,20 @@ export function isAbsoluteRef(ref: string): boolean {
 
 const ASSET_PREFIX = '/api/asset';
 
+// Base path prefix for static (subpath) builds. Read per-call, not at module
+// load, so it reflects the env set for the current build/request and stays
+// stubbable in tests. Empty in dynamic mode -> URLs unchanged.
+function basePrefix(): string {
+  return (process.env.SLADOCS_BASE_PATH || '/').replace(/\/$/, '');
+}
+
+// Prefix an app-internal absolute URL with the static base path. The framework
+// router auto-prefixes its own <Link>s; this is for the plain <a> elements we
+// render ourselves (page-tree listings), which it does not touch.
+export function withBase(url: string): string {
+  return url.startsWith('/') ? `${basePrefix()}${url}` : url;
+}
+
 // Build a serving URL for a relative reference inside a Markdown page.
 // The reference is normalized to a path relative to project.dir so that the
 // resulting URL keeps the real directory structure — relative references inside
@@ -65,7 +79,7 @@ export function assetUrl(
   const abs = path.resolve(path.dirname(pageAbsPath), src);
   const rel = path.relative(project.dir, abs);
   const segments = rel.split(path.sep).map(encodeURIComponent);
-  return `${ASSET_PREFIX}/${encodeURIComponent(project.slug)}/${segments.join('/')}`;
+  return `${basePrefix()}${ASSET_PREFIX}/${encodeURIComponent(project.slug)}/${segments.join('/')}`;
 }
 
 export function isInside(dir: string, file: string): boolean {

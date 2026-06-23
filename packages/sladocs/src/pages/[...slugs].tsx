@@ -28,11 +28,13 @@ import { PageMetaTags, type PageMeta } from '@/lib/meta.js';
 import { createMarkdownCompiler, plugin, type CompileResult } from '@/lib/md.js';
 import { remarkGithubAlert } from '@/lib/remark-github-alert.js';
 import { revalidable } from '@/lib/revalidable.js';
+import { isStatic } from '@/lib/env.js';
+import { computeStaticPaths } from '@/lib/source/static-paths.js';
 import type { MarkdownConfig } from '@/config/schema.js';
 import { Diagnostics } from '@/components/diagnostics.js';
 import { Mermaid } from '@/components/mermaid.js';
 import { Image } from '@/components/image.js';
-import { assetUrl } from '@/lib/asset.js';
+import { assetUrl, withBase } from '@/lib/asset.js';
 import path from 'node:path';
 
 const MDX_PASS_THROUGH: ['mdxJsxFlowElement', 'mdxJsxTextElement'] = [
@@ -216,7 +218,7 @@ function PageTreeNodes({ nodes, skipRef }: { nodes: TreeNode[]; skipRef?: string
         return (
           <a
             key={node.$id ?? i}
-            href={node.url}
+            href={withBase(node.url)}
             className="block py-1 text-fd-muted-foreground transition-colors hover:text-fd-foreground"
           >
             {node.name}
@@ -342,5 +344,6 @@ export default async function DocsSlugPage({ slugs: rawSlugs }: PageProps<'/[...
 }
 
 export async function getConfig() {
-  return { render: 'dynamic' } as const;
+  if (!isStatic()) return { render: 'dynamic' } as const;
+  return { render: 'static', staticPaths: await computeStaticPaths() } as const;
 }
