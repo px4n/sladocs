@@ -331,7 +331,7 @@ export default async function DocsSlugPage({ slugs: rawSlugs }: PageProps<'/[...
     }),
   );
 
-  const frontmatterFields = config.frontmatter.display;
+  const frontmatterFields = config.frontmatter.fields;
 
   return renderShell(
     <DocsPage toc={toc}>

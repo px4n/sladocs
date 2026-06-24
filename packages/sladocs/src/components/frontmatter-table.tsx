@@ -8,35 +8,31 @@ function formatScalar(value: unknown): string {
   return String(value);
 }
 
-function renderValue(value: unknown, badge?: boolean): ReactNode {
+function badge(content: ReactNode, key?: number): ReactNode {
+  return (
+    <span
+      key={key}
+      className="inline-block rounded-md bg-fd-accent px-1.5 py-0.5 text-xs text-fd-accent-foreground"
+    >
+      {content}
+    </span>
+  );
+}
+
+function renderValue(value: unknown, style: FrontmatterField['style']): ReactNode {
   if (value == null || value === '') return null;
 
   if (Array.isArray(value)) {
     const items = value.filter((v) => v != null && v !== '');
     if (items.length === 0) return null;
-    if (badge) {
-      return (
-        <span className="flex flex-wrap gap-1">
-          {items.map((v, i) => (
-            <span
-              key={i}
-              className="inline-block rounded-md bg-fd-accent px-1.5 py-0.5 text-xs text-fd-accent-foreground"
-            >
-              {formatScalar(v)}
-            </span>
-          ))}
-        </span>
-      );
+    if (style === 'badge') {
+      return <span className="flex flex-wrap gap-1">{items.map((v, i) => badge(formatScalar(v), i))}</span>;
     }
     return items.map(formatScalar).join(', ');
   }
 
-  if (badge) {
-    return (
-      <span className="inline-block rounded-md bg-fd-accent px-1.5 py-0.5 text-xs text-fd-accent-foreground">
-        {formatScalar(value)}
-      </span>
-    );
+  if (style === 'badge') {
+    return badge(formatScalar(value));
   }
 
   return formatScalar(value);
@@ -44,7 +40,7 @@ function renderValue(value: unknown, badge?: boolean): ReactNode {
 
 export function FrontmatterTable({ fields, data }: { fields: FrontmatterField[]; data: Record<string, unknown> }) {
   const rows = fields
-    .map((field) => ({ field, rendered: renderValue(data[field.key], field.badge) }))
+    .map((field) => ({ field, rendered: renderValue(data[field.key], field.style) }))
     .filter((row) => row.rendered != null);
 
   if (rows.length === 0) return null;
@@ -56,7 +52,7 @@ export function FrontmatterTable({ fields, data }: { fields: FrontmatterField[];
           {rows.map(({ field, rendered }) => (
             <tr key={field.key} className="border-b border-fd-border last:border-b-0">
               <td className="whitespace-nowrap px-3 py-1.5 font-medium text-fd-muted-foreground">
-                {field.label}
+                {field.label ?? field.key}
               </td>
               <td className="px-3 py-1.5">{rendered}</td>
             </tr>

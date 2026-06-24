@@ -88,26 +88,36 @@ describe('configSchema', () => {
       expect(configSchema.parse({}).frontmatter).toEqual({});
     });
 
-    it('accepts a display array', () => {
+    it('accepts a fields array and defaults style to text', () => {
       const config = configSchema.parse({
         frontmatter: {
-          display: [
-            { key: 'status', label: 'Status', badge: true },
+          fields: [
+            { key: 'status', label: 'Status', style: 'badge' },
             { key: 'owner', label: 'Owner' },
           ],
         },
       });
-      expect(config.frontmatter.display).toHaveLength(2);
-      expect(config.frontmatter.display![0]).toEqual({ key: 'status', label: 'Status', badge: true });
-      expect(config.frontmatter.display![1]).toEqual({ key: 'owner', label: 'Owner' });
+      expect(config.frontmatter.fields).toHaveLength(2);
+      expect(config.frontmatter.fields![0]).toEqual({ key: 'status', label: 'Status', style: 'badge' });
+      expect(config.frontmatter.fields![1]).toEqual({ key: 'owner', label: 'Owner', style: 'text' });
     });
 
-    it('rejects a field without key or label', () => {
+    it('allows label to be omitted', () => {
+      const config = configSchema.parse({ frontmatter: { fields: [{ key: 'status' }] } });
+      expect(config.frontmatter.fields![0]).toEqual({ key: 'status', style: 'text' });
+    });
+
+    it('rejects a field without a key', () => {
       expect(
-        configSchema.safeParse({ frontmatter: { display: [{ key: 'x' }] } }).success,
+        configSchema.safeParse({ frontmatter: { fields: [{ label: 'X' }] } }).success,
       ).toBe(false);
+    });
+
+    it('rejects an unknown style value', () => {
       expect(
-        configSchema.safeParse({ frontmatter: { display: [{ label: 'X' }] } }).success,
+        configSchema.safeParse({
+          frontmatter: { fields: [{ key: 'x', label: 'X', style: 'pill' }] },
+        }).success,
       ).toBe(false);
     });
   });

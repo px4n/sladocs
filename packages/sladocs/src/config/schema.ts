@@ -52,12 +52,12 @@ export const i18nSchema = z
 
 const frontmatterFieldSchema = z.object({
   key: z.string(),
-  label: z.string(),
-  badge: z.boolean().optional(),
+  label: z.string().optional(),
+  style: z.enum(['text', 'badge']).default('text'),
 });
 
 const frontmatterSchemaBase = z.object({
-  display: z.array(frontmatterFieldSchema).optional(),
+  fields: z.array(frontmatterFieldSchema).optional(),
 });
 
 export const frontmatterSchema = frontmatterSchemaBase.default(() => frontmatterSchemaBase.parse({}));
